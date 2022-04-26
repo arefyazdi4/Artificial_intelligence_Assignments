@@ -66,11 +66,15 @@ def depthFirstSearch(problem: SearchProblem):
 
 if __name__ == '__main__':
     import numpy as np
-    raw_matrix_1 = np.zeros((3, 2), dtype=int)
-    print(raw_matrix_1)
-    print(raw_matrix_1.dtype)
+    # raw_matrix_1 = np.zeros((3, 2), dtype=int)
+    # print(raw_matrix_1)
+    # print(raw_matrix_1.dtype)
+    #
+    # raw_matrix_2 = np.array([2,5])
+    #
+    # print(raw_matrix_2 - raw_matrix_1)
+    # np.zeros()
 
-    raw_matrix_2 = np.array([2,5])
-
-    print(raw_matrix_2 - raw_matrix_1)
-    np.zeros()
+    print('...')
+    for i in range(-1,2):
+        print(i)
