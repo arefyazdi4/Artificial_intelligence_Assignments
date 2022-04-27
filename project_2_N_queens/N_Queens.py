@@ -118,22 +118,21 @@ class ChessBoard:
                 print('\n current', current_square.coordinate)
                 # assign new state to current square and update the domain of hole board squares
                 self.assign_state(square=current_square, state=promoted_state)
-                self.print_board()
                 # forward checking to see if neighbor have any valid domain left or not
                 if not self.is_goal():
-                    neighbor_squares = list(filter(lambda neighbor: neighbor.state is not Square.UNASSIGNED_STATE,
+                    neighbor_squares = list(filter(lambda neighbor: neighbor.state == Square.UNASSIGNED_STATE,
                                                    current_square.successors))  # list to apply filter on it
                     if neighbor_squares:  # exist
                         for neighbor in neighbor_squares:
                             print('neighbor', neighbor.coordinate, neighbor.state, end=' ,, ')
+                            neighbor.predecessor = current_square
                             for state in neighbor.domain:
                                 pending_squares_stack.push((neighbor, state))
 
-                    elif neighbor_squares is None:  # there is no more possible option to do -> dead end
+                    elif neighbor_squares.__len__() == 0:  # there is no more possible option to do -> dead end
                         self.un_assign_state(current_square)
-
+                self.print_board()
 
 if __name__ == '__main__':
     b1 = ChessBoard()
-    b1.print_board()
     b1.dfs_cps((0, 0))
