@@ -37,6 +37,12 @@ class Stack:
         else:
             return None
 
+    def is_empty(self):
+        if self.size == 0:
+            return True
+        else:
+            return False
+
     def __iter__(self):
         current_node = self.top
         while current_node:
