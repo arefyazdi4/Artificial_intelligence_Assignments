@@ -40,7 +40,7 @@ class ChessBoard:
         for row in self.board:
             print()  # goes for next row
             for square in row:
-                print(square, end=' ')  # goes for next column
+                print(square, end='  ')  # goes for next column
         print()
 
     def __getitem__(self, item: tuple[int, int]):  # return square obj with (i,j) coordinate
@@ -73,10 +73,15 @@ class ChessBoard:
             return False
 
     def assign_state(self, square: Square, state: str):
-        current_square = square
-        current_square.state = state
+        if state == Square.EMPTY_STATE:
+            current_square = square
+            current_square.state = state
+            return True
 
-        if state == Square.QUEEN_STATE:  # forward checking
+        if state == Square.QUEEN_STATE and square.threatening_squares.__len__() == 0:  # forward checking & backtrack
+            current_square = square
+            current_square.state = state
+
             (i_cur_square, j_cur_square) = current_square.coordinate
             for row in self.board:
                 for new_square in row:
@@ -86,6 +91,8 @@ class ChessBoard:
                             abs(i_cur_square - i_new_square) == abs(j_cur_square - j_new_square):
                         new_square.domain = [Square.EMPTY_STATE]
                         new_square.threatening_squares.append(current_square)
+            return True
+        return False  # if state is queen bt square is threatening
 
     def un_assign_state(self, square: Square):
         current_square = square
@@ -110,29 +117,33 @@ class ChessBoard:
         pending_squares_stack.push((current_square, Square.EMPTY_STATE))
         pending_squares_stack.push((current_square, Square.QUEEN_STATE))
 
-        while not self.is_goal():
-            if not pending_squares_stack.is_empty():  # check exist of stack obj
-                (square, state) = pending_squares_stack.pop()  # exporting data from stack
-                current_square: Square = square  # square obj
-                promoted_state: str = state  # square state (pieces at that square) Queen or Empty
-                print('\n current', current_square.coordinate)
-                # assign new state to current square and update the domain of hole board squares
-                self.assign_state(square=current_square, state=promoted_state)
+        while not pending_squares_stack.is_empty():
+            if self.is_goal():
+                return True
+            (square, state) = pending_squares_stack.pop()  # exporting data from stack
+            current_square: Square = square  # square obj
+            promoted_state: str = state  # square state (pieces at that square) Queen or Empty
+            self.print_board()
+            time.sleep(0.2)
+            print('\n current', current_square.coordinate, current_square.state, state)
+            # assign new state to current square and update the domain of hole board squares
+            if self.assign_state(square=current_square, state=promoted_state):
+                # back tracking if function return false it can't be assigned to queen
                 # forward checking to see if neighbor have any valid domain left or not
-                if not self.is_goal():
-                    neighbor_squares = list(filter(lambda neighbor: neighbor.state == Square.UNASSIGNED_STATE,
-                                                   current_square.successors))  # list to apply filter on it
-                    if neighbor_squares:  # exist
-                        for neighbor in neighbor_squares:
-                            print('neighbor', neighbor.coordinate, neighbor.state, end=' ,, ')
-                            neighbor.predecessor = current_square
-                            for state in neighbor.domain:
-                                pending_squares_stack.push((neighbor, state))
+                neighbor_squares = list(filter(lambda neighbor: neighbor.state == Square.UNASSIGNED_STATE,
+                                               current_square.successors))  # list to apply filter on it
+                if neighbor_squares:  # exist
+                    for neighbor in neighbor_squares:
+                        print('neighbor', neighbor.coordinate, neighbor.state, end=' ,, ')
+                        neighbor.predecessor = current_square
+                        for state in neighbor.domain:
+                            pending_squares_stack.push((neighbor, state))
+                elif neighbor_squares.__len__() == 0:  # there is no more possible option to do -> dead end
+                    self.un_assign_state(current_square)
+        return True
 
-                    elif neighbor_squares.__len__() == 0:  # there is no more possible option to do -> dead end
-                        self.un_assign_state(current_square)
-                self.print_board()
 
 if __name__ == '__main__':
-    b1 = ChessBoard()
+    b1 = ChessBoard(queen_num=5)
     b1.dfs_cps((0, 0))
+    b1.print_board()
