@@ -12,7 +12,10 @@ class BoardTicTak:
         self.board: list[list[Square]] = [[Square(coordinate=(i, j)) for j in range(3)] for i in range(3)]
 
     def __copy__(self):
-        return self.board.copy()
+        new_board = BoardTicTak()
+        new_board.board = self.board
+        new_board.state = self.board
+        return new_board
 
     def get_square(self, item: tuple[int, int]):  # return square obj with (i,j) coordinate
         for row in self.board:
