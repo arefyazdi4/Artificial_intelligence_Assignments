@@ -29,6 +29,14 @@ class BoardTicTak:
                 board += square.__str__() + '  '  # goes for next column
         return board
 
+    def get_valid_actions(self) -> list[tuple[int, int]]:
+        actions = list()
+        for row in self.board:
+            for square in row:
+                if square.state == Square.UNSIGNED_STATE:
+                    actions.append(square.coordinate)
+        return actions
+
     def set_board_state(self):  # goes throw board and check if it's win loss draw or unsigned
 
         if self.state == BoardTicTak.UNSIGNED_STATE:
@@ -58,11 +66,3 @@ class BoardTicTak:
                     if square == Square.UNSIGNED_STATE:
                         self.state = BoardTicTak.UNSIGNED_STATE
                         break
-
-    def get_valid_actions(self) -> list[tuple[int, int]]:
-        actions = list()
-        for row in self.board:
-            for square in row:
-                if square.state == Square.UNSIGNED_STATE:
-                    actions.append(square.coordinate)
-        return actions
