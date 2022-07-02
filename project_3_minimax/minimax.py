@@ -1,6 +1,7 @@
 from branch import Branch
 from board import BoardTicTak
 from square import Square
+import numpy as np
 
 
 class MiniMax:
@@ -8,10 +9,28 @@ class MiniMax:
         pass
 
     def maxi(self, branch: Branch) -> tuple[Branch, tuple[int, int]]:
+        possible_actions = branch.board.get_valid_actions()
+        possible_branches = list()
+        state_values = list()
+        for action in possible_actions:
+            possible_branches.append(Branch(board=branch.board, action=action, player_state=Square.PLAYER_X_STATE))
+        for branch in possible_branches:
+            state_values.append(self.get_state_value(branch))
+        max_value_index = np.argmin(state_values)
+        return possible_branches[max_value_index], possible_actions[max_value_index]
+
+    def mini(self, branch: Branch) -> tuple[Branch, tuple[int, int]]:
         pass
 
-    def mini(self):
-        pass
+    def get_state_value(self, branch: Branch):
+        if branch.state == BoardTicTak.UNSIGNED_STATE:
+            if branch.player_state == Square.PLAYER_O_STATE:
+                (branch, action_x) = self.maxi(branch)
+            elif branch.player_state == Square.PLAYER_X_STATE:
+                (branch, action_o) = self.mini(branch)
+            return branch.state
+        else:
+            return branch.state
 
     def pruning(self):
         pass
