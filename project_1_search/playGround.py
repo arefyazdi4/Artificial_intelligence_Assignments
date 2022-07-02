@@ -76,5 +76,5 @@ if __name__ == '__main__':
     # np.zeros()
 
     print('...')
-    for i in range(-1,2):
+    for i in range(1,2):
         print(i)
