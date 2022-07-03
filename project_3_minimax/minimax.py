@@ -16,28 +16,46 @@ class MiniMax:
             possible_branches.append(Branch(board=branch.board, action=action, player_state=Square.PLAYER_X_STATE))
         for branch in possible_branches:
             state_values.append(self.get_state_value(branch))
-        max_value_index = np.argmin(state_values)
-        return possible_branches[max_value_index], possible_actions[max_value_index]
+        # extraction maximum value that we can get from all branches
+        max_state_value = BoardTicTak.LOSE_STATE
+        max_state_value_index = 0
+        for index, state_value in enumerate(state_values):
+            if state_value > max_state_value:
+                max_state_value = state_value
+                max_state_value_index = index
+        return possible_branches[max_state_value_index], possible_actions[max_state_value_index]
 
     def mini(self, branch: Branch) -> tuple[Branch, tuple[int, int]]:
-        pass
+        possible_actions = branch.board.get_valid_actions()
+        possible_branches = list()
+        state_values = list()
+        for action in possible_actions:
+            possible_branches.append(Branch(board=branch.board, action=action, player_state=Square.PLAYER_O_STATE))
+        for branch in possible_branches:
+            state_values.append(self.get_state_value(branch))
+        # extraction maximum value that we can get from all branches
+        min_state_value = BoardTicTak.WIN_STATE
+        min_state_value_index = 0
+        for index, state_value in enumerate(state_values):
+            if state_value > min_state_value:
+                min_state_value = state_value
+                min_state_value_index = index
+        return possible_branches[min_state_value_index], possible_actions[min_state_value_index]
 
-    def get_state_value(self, branch: Branch):
+    def get_state_value(self, branch: Branch) -> int:
         if branch.state == BoardTicTak.UNSIGNED_STATE:
             if branch.player_state == Square.PLAYER_O_STATE:
                 (branch, action_x) = self.maxi(branch)
             elif branch.player_state == Square.PLAYER_X_STATE:
                 (branch, action_o) = self.mini(branch)
-            return branch.state
-        else:
-            return branch.state
+        return branch.state
 
     def pruning(self):
         pass
 
     def start(self):
         board = BoardTicTak()
-        last_state = board.state
+        last_state = board.state  # it's UnSIGNED by default
         print(board)
         while last_state == BoardTicTak.UNSIGNED_STATE:
             # player -> O turn to move

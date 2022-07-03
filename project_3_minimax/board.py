@@ -8,7 +8,7 @@ class BoardTicTak:
     UNSIGNED_STATE = None
 
     def __init__(self):
-        self.state: str = BoardTicTak.UNSIGNED_STATE
+        self.state: int = BoardTicTak.UNSIGNED_STATE
         self.board: list[list[Square]] = [[Square(coordinate=(i, j)) for j in range(3)] for i in range(3)]
 
     def __copy__(self):
