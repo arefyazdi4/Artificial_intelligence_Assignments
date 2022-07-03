@@ -12,3 +12,7 @@ class Square:
             return '.'
         else:
             return self.state
+
+    def __copy__(self):
+        new_square = Square(self.coordinate, self.state)
+        return new_square
