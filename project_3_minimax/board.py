@@ -13,16 +13,15 @@ class BoardTicTak:
 
     def __copy__(self):
         new_board = BoardTicTak()
-        new_board.board = self.board
-        new_board.state = self.board
+        new_board.board = [[square.__copy__() for square in row]for row in self.board]
+        new_board.set_board_state()
         return new_board
 
-    def get_square(self, item: tuple[int, int]):  # return square obj with (i,j) coordinate
+    def get_square(self, item: tuple[int, int])->Square:  # return square obj with (i,j) coordinate
         for row in self.board:
             for square in row:
                 if square.coordinate == item:
                     return square
-        return None
 
     def __str__(self):
         board: str = str()
@@ -44,32 +43,39 @@ class BoardTicTak:
 
         if self.state == BoardTicTak.UNSIGNED_STATE:
             for i in range(3):  # check if row is win
-                if self.get_square((i, 0)) == self.get_square((i, 1)) == self.get_square(
-                        (i, 2)) == Square.PLAYER_X_STATE:
+                if self.get_square((i, 0)).state == self.get_square((i, 1)).state == self.get_square(
+                        (i, 2)).state == Square.PLAYER_X_STATE:
                     self.state = BoardTicTak.WIN_STATE
-                if self.get_square((i, 0)) == self.get_square((i, 1)) == self.get_square(
-                        (i, 2)) == Square.PLAYER_O_STATE:
+                if self.get_square((i, 0)).state == self.get_square((i, 1)).state == self.get_square(
+                        (i, 2)).state == Square.PLAYER_O_STATE:
                     self.state = BoardTicTak.LOSE_STATE
             for j in range(3):  # check for column win
-                if self.get_square((0, j)) == self.get_square((1, j)) == self.get_square(
-                        (2, j)) == Square.PLAYER_X_STATE:
+                if self.get_square((0, j)).state == self.get_square((1, j)).state == self.get_square(
+                        (2, j)).state == Square.PLAYER_X_STATE:
                     self.state = BoardTicTak.WIN_STATE
-                if self.get_square((0, j)) == self.get_square((1, j)) == self.get_square(
-                        (2, j)) == Square.PLAYER_O_STATE:
+                if self.get_square((0, j)).state == self.get_square((1, j)).state == self.get_square(
+                        (2, j)).state == Square.PLAYER_O_STATE:
                     self.state = BoardTicTak.LOSE_STATE
             # check for diagonal win
-            if self.get_square((0, 0)) == self.get_square((1, 1)) == self.get_square((2, 2)) == Square.PLAYER_X_STATE:
+            if self.get_square((0, 0)).state == self.get_square((1, 1)).state == self.get_square(
+                    (2, 2)).state == Square.PLAYER_X_STATE:
                 self.state = BoardTicTak.WIN_STATE
-            if self.get_square((0, 0)) == self.get_square((1, 1)) == self.get_square((2, 2)) == Square.PLAYER_O_STATE:
+            if self.get_square((0, 0)).state == self.get_square((1, 1)).state == self.get_square(
+                    (2, 2)).state == Square.PLAYER_O_STATE:
                 self.state = BoardTicTak.LOSE_STATE
-            if self.get_square((2, 0)) == self.get_square((1, 1)) == self.get_square((0, 2)) == Square.PLAYER_X_STATE:
+            if self.get_square((2, 0)).state == self.get_square((1, 1)).state == self.get_square(
+                    (0, 2)).state == Square.PLAYER_X_STATE:
                 self.state = BoardTicTak.WIN_STATE
-            if self.get_square((2, 0)) == self.get_square((1, 1)) == self.get_square((0, 2)) == Square.PLAYER_O_STATE:
+            if self.get_square((2, 0)).state == self.get_square((1, 1)).state == self.get_square(
+                    (0, 2)).state == Square.PLAYER_O_STATE:
                 self.state = BoardTicTak.LOSE_STATE
             # check if it's draw
-            self.state = BoardTicTak.DRAW_STATE
-            for row in self.board:
-                for square in row:
-                    if square == Square.UNSIGNED_STATE:
-                        self.state = BoardTicTak.UNSIGNED_STATE
-                        break
+            if self.state == BoardTicTak.UNSIGNED_STATE:
+                self.state = BoardTicTak.DRAW_STATE
+                for row in self.board:
+                    for square in row:
+                        if square.state == Square.UNSIGNED_STATE:
+                            self.state = BoardTicTak.UNSIGNED_STATE
+                            break
+            print('___terminal state___')
+            print(self.state)
