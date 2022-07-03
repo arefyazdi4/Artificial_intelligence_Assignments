@@ -13,11 +13,10 @@ class BoardTicTak:
 
     def __copy__(self):
         new_board = BoardTicTak()
-        new_board.board = [[square.__copy__() for square in row]for row in self.board]
-        new_board.set_board_state()
+        new_board.board = [[square.__copy__() for square in row] for row in self.board]
         return new_board
 
-    def get_square(self, item: tuple[int, int])->Square:  # return square obj with (i,j) coordinate
+    def get_square(self, item: tuple[int, int]) -> Square:  # return square obj with (i,j) coordinate
         for row in self.board:
             for square in row:
                 if square.coordinate == item:
@@ -77,5 +76,3 @@ class BoardTicTak:
                         if square.state == Square.UNSIGNED_STATE:
                             self.state = BoardTicTak.UNSIGNED_STATE
                             break
-            print('___terminal state___')
-            print(self.state)

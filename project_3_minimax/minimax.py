@@ -1,7 +1,7 @@
 from branch import Branch
 from board import BoardTicTak
 from square import Square
-import numpy as np
+import play_ground
 
 
 class MiniMax:
@@ -14,9 +14,6 @@ class MiniMax:
         state_values = list()
         for action in possible_actions:
             new_branch = Branch(board=branch.board, action=action, player_state=Square.PLAYER_X_STATE)
-            print('***creating branch***')
-            print(branch.board)
-            print(branch.state)
             possible_branches.append(new_branch)
         for branch in possible_branches:
             branch.board.set_board_state()
@@ -24,15 +21,10 @@ class MiniMax:
             if branch_state_value == BoardTicTak.UNSIGNED_STATE:
                 branch_state_value = BoardTicTak.LOSE_STATE
             state_values.append(branch_state_value)
-            print('###creating state value###')
-            print(branch_state_value)
         # extraction maximum value that we can get from all branches
         max_state_value = BoardTicTak.LOSE_STATE
         max_state_value_index = 0
         for index, state_value in enumerate(state_values):
-            print('$$$comparing states values$$$')
-            print(index, state_value)
-            print('max value', max_state_value)
             if state_value >= max_state_value:
                 max_state_value = state_value
                 max_state_value_index = index
@@ -43,7 +35,8 @@ class MiniMax:
         possible_branches = list()
         state_values = list()
         for action in possible_actions:
-            possible_branches.append(Branch(board=branch.board, action=action, player_state=Square.PLAYER_O_STATE))
+            new_branch = Branch(board=branch.board, action=action, player_state=Square.PLAYER_O_STATE)
+            possible_branches.append(new_branch)
         for branch in possible_branches:
             branch.board.set_board_state()
             branch_state_value = self.get_state_value(branch)
@@ -77,7 +70,7 @@ class MiniMax:
         print(board)
         while last_state == BoardTicTak.UNSIGNED_STATE:
             # player -> O turn to move
-            action_o_str = input('Enter Your Move <ij>: ')
+            action_o_str = input('Enter Your Move Coordinate <ij>: ')
             action_o = (int(action_o_str[0]), int(action_o_str[1]))  # ij str to tuple (i,j)
             # apply player move to board and show result
             branch = Branch(board=board, action=action_o, player_state=Square.PLAYER_O_STATE)
@@ -88,8 +81,8 @@ class MiniMax:
             board = branch.board
             last_state = branch.state
             print(branch.board)
+            print(branch.state)
 
 
 if __name__ == '__main__':
     game = MiniMax()
-    game.start()
