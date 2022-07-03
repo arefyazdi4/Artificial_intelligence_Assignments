@@ -13,14 +13,27 @@ class MiniMax:
         possible_branches = list()
         state_values = list()
         for action in possible_actions:
-            possible_branches.append(Branch(board=branch.board, action=action, player_state=Square.PLAYER_X_STATE))
+            new_branch = Branch(board=branch.board, action=action, player_state=Square.PLAYER_X_STATE)
+            print('***creating branch***')
+            print(branch.board)
+            print(branch.state)
+            possible_branches.append(new_branch)
         for branch in possible_branches:
-            state_values.append(self.get_state_value(branch))
+            branch.board.set_board_state()
+            branch_state_value = self.get_state_value(branch)
+            if branch_state_value == BoardTicTak.UNSIGNED_STATE:
+                branch_state_value = BoardTicTak.LOSE_STATE
+            state_values.append(branch_state_value)
+            print('###creating state value###')
+            print(branch_state_value)
         # extraction maximum value that we can get from all branches
         max_state_value = BoardTicTak.LOSE_STATE
         max_state_value_index = 0
         for index, state_value in enumerate(state_values):
-            if state_value > max_state_value:
+            print('$$$comparing states values$$$')
+            print(index, state_value)
+            print('max value', max_state_value)
+            if state_value >= max_state_value:
                 max_state_value = state_value
                 max_state_value_index = index
         return possible_branches[max_state_value_index], possible_actions[max_state_value_index]
@@ -32,17 +45,22 @@ class MiniMax:
         for action in possible_actions:
             possible_branches.append(Branch(board=branch.board, action=action, player_state=Square.PLAYER_O_STATE))
         for branch in possible_branches:
-            state_values.append(self.get_state_value(branch))
+            branch.board.set_board_state()
+            branch_state_value = self.get_state_value(branch)
+            if branch_state_value == BoardTicTak.UNSIGNED_STATE:
+                branch_state_value = BoardTicTak.WIN_STATE
+            state_values.append(branch_state_value)
         # extraction maximum value that we can get from all branches
         min_state_value = BoardTicTak.WIN_STATE
         min_state_value_index = 0
         for index, state_value in enumerate(state_values):
-            if state_value > min_state_value:
+            if state_value <= min_state_value:
                 min_state_value = state_value
                 min_state_value_index = index
         return possible_branches[min_state_value_index], possible_actions[min_state_value_index]
 
     def get_state_value(self, branch: Branch) -> int:
+        branch.board.set_board_state()
         if branch.state == BoardTicTak.UNSIGNED_STATE:
             if branch.player_state == Square.PLAYER_O_STATE:
                 (branch, action_x) = self.maxi(branch)
