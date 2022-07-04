@@ -2,26 +2,31 @@ from square import Square
 
 
 class BoardTicTak:
+    # possible state for each game board
     WIN_STATE = 1
     LOSE_STATE = -1
     DRAW_STATE = 0
     UNSIGNED_STATE = None
 
     def __init__(self):
-        self.state: int = BoardTicTak.UNSIGNED_STATE
+        # creating a board that is matrix contain a square with coordinate as each of cells
         self.board: list[list[Square]] = [[Square(coordinate=(i, j)) for j in range(3)] for i in range(3)]
+        self.state: int = BoardTicTak.UNSIGNED_STATE
 
+    # this function prevent to return a pointer for each board and creat a new uniq board that is unliked
     def __copy__(self):
         new_board = BoardTicTak()
         new_board.board = [[square.__copy__() for square in row] for row in self.board]
         return new_board
 
+    # this method is a recall to get attrib function that is made to get each value in obj
     def get_square(self, item: tuple[int, int]) -> Square:  # return square obj with (i,j) coordinate
         for row in self.board:
             for square in row:
                 if square.coordinate == item:
                     return square
 
+    # function provided for this class so we easily see the well made board on print function call
     def __str__(self):
         board: str = str()
         for row in self.board:
@@ -30,6 +35,7 @@ class BoardTicTak:
                 board += square.__str__() + '  '  # goes for next column
         return board
 
+    # return a list of coordinate tuples -> [(i,j)] on squares that is not taken
     def get_valid_actions(self) -> list[tuple[int, int]]:
         actions = list()
         for row in self.board:
