@@ -178,12 +178,13 @@ def render(state, c_choice, h_choice):
         +1: 'O',
         0: '.'
     }
-    print()
+
     for row in state:
         for cell in row:
             symbol = chars[cell]
             print(f'{symbol}', end=' ')
         print()
+    print()
 
 def ai_turn(c_choice, h_choice):
     """
